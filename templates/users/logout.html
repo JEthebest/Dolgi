@@ -1,0 +1,10 @@
+{% extends 'users/base.html' %}
+{% block content %}
+<h2>Выход</h2>
+<p>Вы действительно хотите выйти из системы?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Да</button>
+  <a href="{% url 'home' %}">Отмена</a>
+</form>
+{% endblock %}

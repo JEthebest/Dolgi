@@ -1,0 +1,18 @@
+<!-- agents/detail.html -->
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <h1>Agent Detail</h1>
+  <p><strong>Name:</strong> {{ agent.name }}</p>
+  <p><strong>Description:</strong> {{ agent.description }}</p>
+  <p><strong>Total Amount:</strong> {{ total_amount }}</p>
+  {% if debts %}
+    <ul>
+      {% for debt in debts %}
+        <li><a href="{% url 'debt_detail' debt.id %}">{{ debt.description }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No debts associated with this agent.</p>
+  {% endif %}
+{% endblock %}

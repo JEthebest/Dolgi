@@ -1,0 +1,15 @@
+<!-- debts/list.html -->
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <h1>Debts List</h1>
+  {% if debts %}
+    <ul>
+      {% for debt in debts %}
+        <li><a href="{% url 'debt_detail' debt.id %}">{{ debt.description }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You have no debts.</p>
+  {% endif %}
+{% endblock %}
