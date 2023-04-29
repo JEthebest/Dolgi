@@ -2,35 +2,8 @@
 
 {% block content %}
   <h1>Статистика аккаунта</h1>
-  
-  <h2>Общая сумма долгов: {{ total_amount }}</h2>
-  
-  <h2>Долги связанные с агентами:</h2>
-  {% for agent_debt in agent_debts %}
-    <h3>{{ agent_debt.agent.name }}:</h3>
-    {% if agent_debt.total_amount %}
-      <p>Общая сумма долгов: {{ agent_debt.total_amount }}</p>
-    {% endif %}
-    {% if agent_debt.debts %}
-      <ul>
-        {% for debt in agent_debt.debts %}
-          <li>{{ debt.creditor }} -> {{ debt.debtor }}: {{ debt.amount }}</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>Нет долгов связанных с данным агентом</p>
-    {% endif %}
-  {% endfor %}
-  
-  <h2>Агенты:</h2>
-  {% if user_agents %}
-    <ul>
-      {% for agent in user_agents %}
-        <li>{{ agent.name }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>У вас нет агентов</p>
-  {% endif %}
-  
+  <p>Всего дали: {{ total_given }}</p>
+  <p>Всего взяли: {{ total_taken }}</p>
+  <p>Баланс: {{ balance }}</p>
 {% endblock %}
+

@@ -1,0 +1,23 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <h1>Задолженности мне</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Должник</th>
+        <th>Сумма</th>
+        <th>Описание</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for debt in debts_to_me %}
+        <tr>
+          <td>{{ debt.agent.name }}</td>
+          <td>{{ debt.amount }}</td>
+          <td>{{ debt.description }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

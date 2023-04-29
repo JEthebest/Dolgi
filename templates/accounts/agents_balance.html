@@ -1,0 +1,21 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <h1>Баланс агентов</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Агент</th>
+        <th>Баланс</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for agent, balance in agents_balance.items %}
+        <tr>
+          <td>{{ agent.name }}</td>
+          <td>{{ balance }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

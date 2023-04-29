@@ -1,0 +1,29 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <h1>История задолженностей</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Агент</th>
+        <th>Клиент</th>
+        <th>Тип</th>
+        <th>Сумма</th>
+        <th>Дата</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for debt in debts_history %}
+        <tr>
+          <td>{{ debt.agent }}</td>
+          <td>{{ debt.client }}</td>
+          <td>{{ debt.tranzaction_type }}</td>
+          <td>{{ debt.amount }}</td>
+          <td>{{ debt.date }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+

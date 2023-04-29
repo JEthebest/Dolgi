@@ -6,6 +6,7 @@ from apps.debts import views as deb_views
 
 
 users_url = [
+    path('home/', views.home, name='home'),
     path('', views.UserLoginView.as_view(), name='login'),
     path('register/', views.UserRegistrationView.as_view(), name='register'),
     path('logout/', views.UserLogoutView.as_view(), name='logout'),
@@ -33,30 +34,23 @@ users_url = [
 
 
 debts_url = [
-    path('', deb_views.debts_list, name='debts_list'),
-    path('agents/create/', deb_views.create_agent, name='create_agent'),
     path(
-        'agents/<int:agent_id>/', deb_views.agent_detail,
-        name='agent_detail'
+        'agent_debts/', deb_views.agent_debts,
+        name='agent_debts'
     ),
+    path('my_debts/', deb_views.my_debts, name='my_debts'),
+    path('debts_to_me/', deb_views.debts_to_me, name='debts_to_me'),
+    path('create_agent/', deb_views.create_agent, name='create_agent'),
+    path('create_debt/', deb_views.create_debt, name='create_debt'),
+    path('update_debt/<int:pk>/', deb_views.update_debt, name='update_debt'),
+    path('delete_debt/<int:pk>/', deb_views.delete_debt, name='delete_debt'),
     path(
-        'agents/<int:agent_id>/take_loan/', deb_views.take_loan,
-        name='take_loan'
-    ),
-    path(
-        'agents/<int:agent_id>/give_loan/', deb_views.give_loan,
-        name='give_loan'
-    ),
-    path('debts/<int:debt_id>/', deb_views.debt_detail, name='debt_detail'),
-    path(
-        'debts/<int:debt_id>/increase_loan/', deb_views.increase_loan,
-        name='increase_loan'
-    ),
-    path('debts/<int:debt_id>/pay_debt/', deb_views.pay_debt, name='pay_debt'),
-    path(
-        'account/statistics/', deb_views.account_statistics,
+        'account_statistics/', deb_views.account_statistics,
         name='account_statistics'
     ),
+    path('agents_balance/', deb_views.agents_balance, name='agents_balance'),
+    path('debts_history/', deb_views.debts_history, name='debts_history'),
+    path('turnover/', deb_views.turnover, name='turnover'),
 ]
 
 

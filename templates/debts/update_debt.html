@@ -1,11 +1,10 @@
-<!-- debts/take_loan.html -->
 {% extends 'users/base.html' %}
 
 {% block content %}
-  <h1>Take Loan</h1>
+  <h1>Изменить задолженность</h1>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Take Loan</button>
+    <button type="submit">Сохранить изменения</button>
   </form>
 {% endblock %}

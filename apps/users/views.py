@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import (
@@ -13,6 +13,7 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
 )
 from django.views.generic.edit import FormView
+from django.contrib.auth.decorators import login_required
 
 from apps.users.forms import UserForm
 
@@ -33,7 +34,7 @@ class UserRegistrationView(FormView):
 class UserLoginView(FormView):
     template_name = 'users/login.html'
     form_class = AuthenticationForm
-    success_url = '/'
+    success_url = 'home'
 
     def form_valid(self, form):
         user = form.get_user()
@@ -67,3 +68,8 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
 
 class UserPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'users/password_reset_complete.html'
+
+
+@login_required
+def home(request):
+    return render(request, 'users/base.html')

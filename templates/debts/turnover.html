@@ -1,0 +1,41 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <h1>Оборот задолженностей</h1>
+
+  <h2>Дано</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Месяц</th>
+        <th>Сумма</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for debt in given_by_month %}
+        <tr>
+          <td>{{ debt.month|date:"F Y" }}</td>
+          <td>{{ debt.amount }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Взято</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Месяц</th>
+        <th>Сумма</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for debt in taken_by_month %}
+        <tr>
+          <td>{{ debt.month|date:"F Y" }}</td>
+          <td>{{ debt.amount }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

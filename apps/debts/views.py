@@ -1,33 +1,48 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from django.contrib import messages
+from django.db.models.functions import TruncMonth
 
 from apps.debts.models import Debt, Agent
 from apps.debts.forms import DebtForm, AgentForm
 
 
 @login_required
-def debts_list(request):
-    # Получение всех долгов пользователя,
-    # где пользователь - кредитор или должник
-    user_debts = Debt.objects.filter(
-        creditor=request.user
-    ) | Debt.objects.filter(creditor=request.user)
+def agent_debts(request):
+    user_agents = Agent.objects.filter(user=request.user)
+    debts = Debt.objects.filter(agent__in=user_agents)
+
     context = {
-        'debts': user_debts
+        'debts': debts
     }
-    return render(request, 'debts/list.html', context)
+    return render(request, 'debts/agent_debts.html', context)
 
 
 @login_required
-def debt_detail(request, debt_id):
-    # Получение конкретного долга пользователя
-    debt = get_object_or_404(Debt, id=debt_id, creditor=request.user)
-    # или debtor=request.user, в зависимости от роли пользователя
+def my_debts(request):
+    user_agents = Agent.objects.filter(user=request.user)
+    my_debts = Debt.objects.filter(
+        tranzaction_type='ВЗЯТЬ', agent__in=user_agents
+    )
+
     context = {
-        'debt': debt
+        'my_debts': my_debts
     }
-    return render(request, 'debts/detail.html', context)
+    return render(request, 'debts/my_debts.html', context)
+
+
+@login_required
+def debts_to_me(request):
+    user_agents = Agent.objects.filter(user=request.user)
+    debts_to_me = Debt.objects.filter(
+        tranzaction_type='ДАТЬ', agent__in=user_agents
+    )
+
+    context = {
+        'debts_to_me': debts_to_me
+    }
+    return render(request, 'debts/debts_to_me.html', context)
 
 
 @login_required
@@ -38,9 +53,11 @@ def create_agent(request):
             agent = form.save(commit=False)
             agent.user = request.user
             agent.save()
-            return redirect('agent_detail', agent_id=agent.id)
+            messages.success(request, 'Агент создан успешно!')
+            return redirect('agent_debts')
     else:
         form = AgentForm()
+
     context = {
         'form': form
     }
@@ -48,165 +65,126 @@ def create_agent(request):
 
 
 @login_required
-def agent_detail(request, agent_id):
-    # Получение информации об агенте пользователя
-    agent = get_object_or_404(Agent, id=agent_id, user=request.user)
-    # Получение всех долгов пользователя, связанных с агентом
-    agent_debts = Debt.objects.filter(
-        agent=agent, creditor=request.user
-    ) | Debt.objects.filter(agent=agent, debtor=request.user)
-    # Получение общей суммы долгов пользователя, связанных с агентом
-    total_amount = agent_debts.aggregate(
-        total_amount=Sum('amount')
-    ).get('total_amount', 0)
-    context = {
-        'agent': agent,
-        'debts': agent_debts,
-        'total_amount': total_amount
-    }
-    return render(request, 'agents/detail.html', context)
-
-
-@login_required
-def take_loan(request, agent_id):
+def create_debt(request):
     if request.method == 'POST':
         form = DebtForm(request.POST)
         if form.is_valid():
             debt = form.save(commit=False)
-            debt.agent_id = agent_id
-            debt.debtor = request.user
             debt.save()
-            return redirect('agent_detail', agent_id=agent_id)
+            messages.success(request, 'Задолженность создана успешно!')
+            return redirect('agent_debts')
     else:
         form = DebtForm()
+
     context = {
         'form': form
     }
-    return render(request, 'debts/take_loan.html', context)
+    return render(request, 'debts/create_debt.html', context)
 
 
 @login_required
-def give_loan(request, agent_id):
+def update_debt(request, pk):
+    debt = get_object_or_404(Debt, pk=pk)
+
     if request.method == 'POST':
-        form = DebtForm(request.POST)
+        form = DebtForm(request.POST, instance=debt)
         if form.is_valid():
             debt = form.save(commit=False)
-            debt.agent_id = agent_id
-            debt.creditor = request.user
             debt.save()
-            return redirect('agent_detail', agent_id=agent_id)
+            messages.success(request, 'Задолженность изменена успешно!')
+            return redirect('agent_debts')
     else:
-        form = DebtForm()
+        form = DebtForm(instance=debt)
+
     context = {
         'form': form
     }
-    return render(request, 'debts/give_loan.html', context)
+    return render(request, 'debts/update_debt.html', context)
 
 
 @login_required
-def increase_loan(request, debt_id):
-    debt = get_object_or_404(Debt, id=debt_id, creditor=request.user)
-    if request.method == 'POST':
-        form = DebtForm(request.POST, instance=debt)
-        if form.is_valid():
-            form.save()
-            return redirect('debt_detail', debt_id=debt_id)
-    else:
-        form = DebtForm(instance=debt)
-    context = {
-        'form': form
-    }
-    return render(request, 'debts/increase_loan.html', context)
-
-
-@login_required
-def pay_debt(request, debt_id):
-    debt = get_object_or_404(Debt, id=debt_id, debtor=request.user)
-    if request.method == 'POST':
-        form = DebtForm(request.POST, instance=debt)
-        if form.is_valid():
-            form.save()
-            return redirect('debt_detail', debt_id=debt_id)
-    else:
-        form = DebtForm(instance=debt)
-    context = {
-        'form': form
-    }
-    return render(request, 'debts/pay_debt.html', context)
+def delete_debt(request, pk):
+    debt = get_object_or_404(Debt, pk=pk)
+    debt.delete()
+    messages.success(request, 'Задолженность удалена успешно!')
+    return redirect('agent_debts')
 
 
 @login_required
 def account_statistics(request):
-    # Получение всех долгов пользователя
-    user_debts = Debt.objects.filter(
-        creditor=request.user
-    ) | Debt.objects.filter(debtor=request.user)
-    # Получение всех агентов пользователя
     user_agents = Agent.objects.filter(user=request.user)
-    # Получение всех долгов пользователя, связанных с каждым агентом
-    agent_debts = []
-    for agent in user_agents:
-        agent_debts.append({
-            'agent': agent,
-            'debts': Debt.objects.filter(
-                agent=agent, creditor=request.user
-            ) | Debt.objects.filter(agent=agent, debtor=request.user),
-            'total_amount': Debt.objects.filter(
-                agent=agent, creditor=request.user
-            ).aggregate(total_amount=Sum('amount')).get('total_amount', 0)
-        })
-    # Получение общей суммы долгов пользователя
-    total_amount = user_debts.aggregate(
-        total_amount=Sum('amount')
-    ).get('total_amount', 0)
+
+    total_given = Debt.objects.filter(
+        tranzaction_type='ДАТЬ', agent__in=user_agents
+    ).aggregate(Sum('amount'))['amount__sum']
+    total_taken = Debt.objects.filter(
+        tranzaction_type='ВЗЯТЬ', agent__in=user_agents
+    ).aggregate(Sum('amount'))['amount__sum']
+    balance = (total_given or 0) - (total_taken or 0)
+
     context = {
-        'user_agents': user_agents,
-        'agent_debts': agent_debts,
-        'total_amount': total_amount
+        'total_given': total_given,
+        'total_taken': total_taken,
+        'balance': balance,
     }
     return render(request, 'accounts/statistics.html', context)
 
 
 @login_required
-def transaction_history(request):
-    # Получение всех транзакций пользователя
-    transactions = Debt.objects.filter(
-        creditor=request.user
-    ) | Debt.objects.filter(debtor=request.user)
+def agents_balance(request):
+    user_agents = Agent.objects.filter(user=request.user)
+
+    agents_balance = {}
+    for agent in user_agents:
+        given = Debt.objects.filter(
+            tranzaction_type='ДАТЬ', agent=agent
+        ).aggregate(Sum('amount'))['amount__sum']
+        taken = Debt.objects.filter(
+            tranzaction_type='ВЗЯТЬ', agent=agent
+        ).aggregate(Sum('amount'))['amount__sum']
+        balance = (given or 0) - (taken or 0)
+        agents_balance[agent] = balance
+
     context = {
-        'transactions': transactions
+        'agents_balance': agents_balance,
     }
-    return render(request, 'accounts/transactions.html', context)
+    return render(request, 'accounts/agents_balance.html', context)
+
+
+@login_required
+def debts_history(request):
+    user_agents = Agent.objects.filter(user=request.user)
+    debts_history = Debt.objects.filter(
+        agent__in=user_agents
+    ).order_by('-date')
+
+    context = {
+        'debts_history': debts_history,
+    }
+    return render(request, 'debts/history.html', context)
 
 
 @login_required
 def turnover(request):
-    # Получение общей суммы долгов пользователя
-    user_debts = Debt.objects.filter(
-        creditor=request.user
-    ) | Debt.objects.filter(debtor=request.user)
-    total_amount = user_debts.aggregate(
-        total_amount=Sum('amount')
-    ).get('total_amount', 0)
-
-    # Получение общей суммы оборотов пользователя с каждым агентом
-    agent_turnover = []
     user_agents = Agent.objects.filter(user=request.user)
-    for agent in user_agents:
-        agent_turnover.append({
-            'agent': agent,
-            'turnover': Debt.objects.filter(
-                agent=agent, creditor=request.user
-            ).aggregate(
-                turnover=Sum('amount')
-            ).get('turnover', 0) - Debt.objects.filter(
-                agent=agent, debtor=request.user
-            ).aggregate(turnover=Sum('amount')).get('turnover', 0)
-        })
+
+    given_by_month = Debt.objects.filter(
+        tranzaction_type='ДАТЬ', agent__in=user_agents
+    )\
+        .annotate(month=TruncMonth('date'))\
+        .values('month')\
+        .annotate(amount=Sum('amount'))\
+        .order_by('-month')
+    taken_by_month = Debt.objects.filter(
+        tranzaction_type='ВЗЯТЬ', agent__in=user_agents
+    )\
+        .annotate(month=TruncMonth('date'))\
+        .values('month')\
+        .annotate(amount=Sum('amount'))\
+        .order_by('-month')
 
     context = {
-        'user_agents': user_agents,
-        'agent_turnover': agent_turnover,
-        'total_amount': total_amount
+        'given_by_month': given_by_month,
+        'taken_by_month': taken_by_month,
     }
-    return render(request, 'accounts/turnover.html', context)
+    return render(request, 'debts/turnover.html', context)
