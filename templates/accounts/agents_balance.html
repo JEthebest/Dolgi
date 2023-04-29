@@ -1,21 +1,28 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-  <h1>Баланс агентов</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Агент</th>
-        <th>Баланс</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for agent, balance in agents_balance.items %}
-        <tr>
-          <td>{{ agent.name }}</td>
-          <td>{{ balance }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="container">
+    <h1 class="text-center mb-4">Баланс агентов</h1>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Агент</th>
+              <th scope="col">Баланс</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for agent, balance in agents_balance.items %}
+              <tr>
+                <td>{{ agent.name }}</td>
+                <td>{{ balance }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 {% endblock %}
+

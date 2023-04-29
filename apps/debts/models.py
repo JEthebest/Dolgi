@@ -4,8 +4,8 @@ from apps.users.models import User
 
 
 TRANZACTION_CHOICE = (
-    ('ВЗЯТЬ', 'Взять'),
-    ('ДАТЬ', 'Дать'),
+    ('Взял в долг', 'Взять'),
+    ('Дал в долг', 'Дать'),
 )
 
 

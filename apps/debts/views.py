@@ -23,7 +23,7 @@ def agent_debts(request):
 def my_debts(request):
     user_agents = Agent.objects.filter(user=request.user)
     my_debts = Debt.objects.filter(
-        tranzaction_type='ВЗЯТЬ', agent__in=user_agents
+        tranzaction_type='Взял в долг', agent__in=user_agents
     )
 
     context = {
@@ -36,7 +36,7 @@ def my_debts(request):
 def debts_to_me(request):
     user_agents = Agent.objects.filter(user=request.user)
     debts_to_me = Debt.objects.filter(
-        tranzaction_type='ДАТЬ', agent__in=user_agents
+        tranzaction_type='Дал в долг', agent__in=user_agents
     )
 
     context = {
@@ -115,10 +115,10 @@ def account_statistics(request):
     user_agents = Agent.objects.filter(user=request.user)
 
     total_given = Debt.objects.filter(
-        tranzaction_type='ДАТЬ', agent__in=user_agents
+        tranzaction_type='Дал в долг', agent__in=user_agents
     ).aggregate(Sum('amount'))['amount__sum']
     total_taken = Debt.objects.filter(
-        tranzaction_type='ВЗЯТЬ', agent__in=user_agents
+        tranzaction_type='Взял в долг', agent__in=user_agents
     ).aggregate(Sum('amount'))['amount__sum']
     balance = (total_given or 0) - (total_taken or 0)
 
@@ -137,10 +137,10 @@ def agents_balance(request):
     agents_balance = {}
     for agent in user_agents:
         given = Debt.objects.filter(
-            tranzaction_type='ДАТЬ', agent=agent
+            tranzaction_type='Дал в долг', agent=agent
         ).aggregate(Sum('amount'))['amount__sum']
         taken = Debt.objects.filter(
-            tranzaction_type='ВЗЯТЬ', agent=agent
+            tranzaction_type='Взял в долг', agent=agent
         ).aggregate(Sum('amount'))['amount__sum']
         balance = (given or 0) - (taken or 0)
         agents_balance[agent] = balance
@@ -169,14 +169,14 @@ def turnover(request):
     user_agents = Agent.objects.filter(user=request.user)
 
     given_by_month = Debt.objects.filter(
-        tranzaction_type='ДАТЬ', agent__in=user_agents
+        tranzaction_type='Дал в долг', agent__in=user_agents
     )\
         .annotate(month=TruncMonth('date'))\
         .values('month')\
         .annotate(amount=Sum('amount'))\
         .order_by('-month')
     taken_by_month = Debt.objects.filter(
-        tranzaction_type='ВЗЯТЬ', agent__in=user_agents
+        tranzaction_type='Взял в долг', agent__in=user_agents
     )\
         .annotate(month=TruncMonth('date'))\
         .values('month')\

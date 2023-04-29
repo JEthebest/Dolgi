@@ -4,8 +4,8 @@ from apps.debts.models import Debt, Agent
 
 
 TRANZACTION_CHOICE = (
-    ('ВЗЯТЬ', 'Взять'),
-    ('ДАТЬ', 'Дать'),
+    ('Взял в долг', 'Взять'),
+    ('Дал в долг', 'Дать'),
 )
 
 

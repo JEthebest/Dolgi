@@ -1,41 +1,49 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-  <h1>Оборот задолженностей</h1>
+  <div class="container">
+    <h1 class="text-center mt-5 mb-4">Оборот задолженностей</h1>
 
-  <h2>Дано</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Месяц</th>
-        <th>Сумма</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for debt in given_by_month %}
-        <tr>
-          <td>{{ debt.month|date:"F Y" }}</td>
-          <td>{{ debt.amount }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Дано</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Месяц</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for debt in given_by_month %}
+              <tr>
+                <td>{{ debt.month|date:"F Y" }}</td>
+                <td>{{ debt.amount }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-  <h2>Взято</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Месяц</th>
-        <th>Сумма</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for debt in taken_by_month %}
-        <tr>
-          <td>{{ debt.month|date:"F Y" }}</td>
-          <td>{{ debt.amount }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      <div class="col-md-6">
+        <h2>Взято</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Месяц</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for debt in taken_by_month %}
+              <tr>
+                <td>{{ debt.month|date:"F Y" }}</td>
+                <td>{{ debt.amount }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 {% endblock %}

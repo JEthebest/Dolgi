@@ -1,31 +1,35 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-  <h1>Мои долги</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Дата</th>
-        <th>Тип</th>
-        <th>Агент</th>
-        <th>Клиент</th>
-        <th>Сумма</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for debt in my_debts %}
-        <tr>
-          <td>{{ debt.date }}</td>
-          <td>{{ debt.tranzaction_type }}</td>
-          <td>{{ debt.agent }}</td>
-          <td>{{ debt.client }}</td>
-          <td>{{ debt.amount }}</td>
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="5">Нет задолженностей для отображения</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="container">
+    <h1 class="text-center">Мои долги</h1>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <table class="table table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Дата</th>
+              <th scope="col">Тип</th>
+              <th scope="col">Агент</th>
+              <th scope="col">Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for debt in my_debts %}
+              <tr>
+                <td>{{ debt.date }}</td>
+                <td>{{ debt.tranzaction_type }}</td>
+                <td>{{ debt.agent }}</td>
+                <td>{{ debt.amount }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center">Нет задолженностей для отображения</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 {% endblock %}
