@@ -8,6 +8,10 @@ from apps.debts.models import Debt, Agent
 from apps.debts.forms import DebtForm, AgentForm
 
 
+def main_dolgi(request):
+    return render(request, 'debts/main_dolgi.html')
+
+
 @login_required
 def agent_debts(request):
     user_agents = Agent.objects.filter(user=request.user)

@@ -34,6 +34,7 @@ users_url = [
 
 
 debts_url = [
+    path('main/', deb_views.main_dolgi, name='main'),
     path(
         'agent_debts/', deb_views.agent_debts,
         name='agent_debts'
