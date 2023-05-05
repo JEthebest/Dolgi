@@ -1,9 +1,70 @@
 {% extends 'users/base.html' %}
+
 {% block content %}
-<h2>Регистрация</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Зарегистрироваться</button>
-</form>
+    <div class="bg-light p-5 rounded">
+        <h2 style="margin-left: 400px;">Регистрация</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="col-12">
+                <label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label>
+                <div class="input-group">
+                    <div class="input-group-text">@</div>
+                    <input type="text" class="form-control" id="inlineFormInputGroupUsername" name="username" placeholder="Username">
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <div class="row g-3">
+                    <div class="col">
+                        <input type="text" class="form-control" name="first_name" placeholder="First name" aria-label="First name">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" name="last_name" placeholder="Last name" aria-label="Last name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label"></label>
+                <input type="email" class="form-control" name="email" id="exampleFormControlInput1" placeholder="Email address">
+            </div>
+
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="inputPassword6" class="col-form-label">Password</label>
+                </div>
+                <div class="col-auto">
+                    <input type="password" id="inputPassword6" class="form-control" name="password1" aria-describedby="passwordHelpInline">
+                </div>
+                <div class="col-auto">
+                    <span id="passwordHelpInline" class="form-text">
+                        Your password can’t be too similar to your other personal information.
+                        Your password must contain at least 8 characters.
+                        Your password can’t be a commonly used password.
+                        Your password can’t be entirely numeric.
+                    </span>
+                </div>
+            </div>
+
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="inputPassword6" class="col-form-label">Password Confirmation</label>
+                </div>
+                <div class="col-auto">
+                    <input type="password" id="inputPassword6" class="form-control" name="password2" aria-describedby="passwordHelpInline">
+                </div>
+                <div class="col-auto">
+                    <span id="passwordHelpInline" class="form-text">
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-12" style="margin-top: 20px;" >
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </div>
+        </form>
+
+    </div>
 {% endblock %}

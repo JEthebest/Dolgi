@@ -1,0 +1,51 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <main>
+
+
+<div style="margin-top: 100px">
+    <div class="row align-items-md-stretch">
+      <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+          <h2>Взять  долг</h2>
+          <p> </p>
+          <a class="btn btn-outline-light" href="{% url 'agent_debts' %}">Взять</a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="h-100 p-5 bg-light border rounded-3">
+          <h2>Погасить долг</h2>
+          <p></p>
+          <a class="btn btn-outline-secondary" href="{% url 'my_debts' %}">Погасить долг</a>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div style="margin-top: 100px">
+    <div class="row align-items-md-stretch">
+      <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+          <h2>Дать  в долг</h2>
+          <p></p>
+          <a class="btn btn-outline-light" href="{% url 'create_debt' %}">Дать</a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="h-100 p-5 bg-light border rounded-3">
+          <h2>Обороты</h2>
+          <p></p>
+          <a class="btn btn-outline-secondary" href="{% url 'turnover' %}">Обороты</a>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+    <footer class="pt-3 mt-4 text-muted border-top">
+      © 2021
+    </footer>
+  </div>
+</main>
+{% endblock %}
