@@ -36,22 +36,23 @@ users_url = [
 debts_url = [
     path('main/', deb_views.main_dolgi, name='main'),
     path(
-        'agent_debts/', deb_views.agent_debts,
-        name='agent_debts'
+        'borrow/', deb_views.borrow,
+        name='borrow_money'
+    ),
+    path(
+        'repay/<int:transaction_id>/<str:slug>/',
+        deb_views.repay, name='repay'
+    ),
+    path('lend/', deb_views.lend, name='lend_money'),
+    path(
+        'receive_payment/<int:transaction_id>/',
+        deb_views.receive_payment, name='receive_payment',
     ),
     path('my_debts/', deb_views.my_debts, name='my_debts'),
     path('debts_to_me/', deb_views.debts_to_me, name='debts_to_me'),
-    path('create_agent/', deb_views.create_agent, name='create_agent'),
-    path('create_debt/', deb_views.create_debt, name='create_debt'),
-    path('update_debt/<int:pk>/', deb_views.update_debt, name='update_debt'),
-    path('delete_debt/<int:pk>/', deb_views.delete_debt, name='delete_debt'),
-    path(
-        'account_statistics/', deb_views.account_statistics,
-        name='account_statistics'
-    ),
-    path('agents_balance/', deb_views.agents_balance, name='agents_balance'),
-    path('debts_history/', deb_views.debts_history, name='debts_history'),
-    path('turnover/', deb_views.turnover, name='turnover'),
+    path('contacts/<str:slug>/', deb_views.my_contacts, name='contacts'),
+    path('create/contact/', deb_views.create_contact, name='create_contact'),
+    path('take_loan/<str:slug>/', deb_views.take_loan, name='take_loan'),
 ]
 
 

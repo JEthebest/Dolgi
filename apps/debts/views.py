@@ -1,34 +1,145 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
-from django.contrib import messages
-from django.db.models.functions import TruncMonth
 
-from apps.debts.models import Debt, Agent
-from apps.debts.forms import DebtForm, AgentForm
+from decimal import Decimal
+
+from apps.debts.models import Tranzaction, Contact
+from apps.debts.forms import (
+    TranzactionForm,
+    ContactForm,
+    TranzactionContactForm,
+)
 
 
+@login_required
 def main_dolgi(request):
     return render(request, 'debts/main_dolgi.html')
 
 
 @login_required
-def agent_debts(request):
-    user_agents = Agent.objects.filter(user=request.user)
-    debts = Debt.objects.filter(agent__in=user_agents)
+def create_contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            agent = form.save(commit=False)
+            agent.user = request.user
+            agent.save()
+            return redirect('main')
+    else:
+        form = ContactForm()
 
     context = {
-        'debts': debts
+        'form': form
     }
-    return render(request, 'debts/agent_debts.html', context)
+    return render(request, 'accounts/create.html', context)
+
+
+@login_required
+def borrow(request):
+    if request.method == 'POST':
+        contact_form = ContactForm(request.POST)
+        transaction_form = TranzactionForm(request.POST)
+        if contact_form.is_valid() and transaction_form.is_valid():
+            contact = contact_form.save(commit=False)
+            contact.user = request.user
+            contact.save()
+            transaction = transaction_form.save(commit=False)
+            transaction.agent = contact
+            transaction.type = 'Займ'
+            transaction.save()
+            return redirect('main')
+    else:
+        contact_form = ContactForm()
+        transaction_form = TranzactionForm()
+    return render(
+                request, 'debts/borrow.html',
+                {
+                    'contact_form': contact_form,
+                    'transaction_form': transaction_form
+                }
+            )
+
+
+@login_required
+def repay(request, transaction_id, slug):
+    transaction = Tranzaction.objects.get(id=transaction_id)
+    if request.method == 'POST':
+        amount = float(request.POST['amount'])
+        if amount == float(transaction.amount) and slug == 'Погасить':
+            transaction.publish = False  # закрытие сделки
+            transaction.save()
+            return redirect('main')
+        elif amount <= float(transaction.amount) and slug == 'Погасить':
+            Tranzaction.objects.create(
+                agent=transaction.agent,
+                amount=transaction.amount - Decimal(amount),
+                description=f"""
+                        Repayment of {amount} from transaction #{
+                        transaction.id
+                    }"""
+            )
+            transaction.publish = False
+            transaction.save()
+            return redirect('main')
+        elif slug == 'Увеличить':
+            Tranzaction.objects.create(
+                agent=transaction.agent,
+                amount=transaction.amount + Decimal(amount),
+                description=f"""
+                        Repayment of {amount} from transaction #{
+                        transaction.id
+                    }"""
+            )
+            transaction.publish = False
+            transaction.save()
+            return redirect('main')
+    return render(request, 'debts/repay.html', {'transaction': transaction})
+
+
+@login_required
+def receive_payment(request, transaction_id):
+    transaction = Tranzaction.objects.get(id=transaction_id)
+    if request.method == 'POST':
+        amount = float(request.POST['amount'])
+        if amount <= transaction.amount:
+            transaction.amount -= amount
+            transaction.save()
+            return redirect('dashboard')
+    return render(
+                request, 'receive_payment.html',
+                {'transaction': transaction}
+            )
+
+
+@login_required
+def lend(request):
+    if request.method == 'POST':
+        contact_form = ContactForm(request.POST)
+        transaction_form = TranzactionForm(request.POST)
+        if contact_form.is_valid() and transaction_form.is_valid():
+            contact = contact_form.save(commit=False)
+            contact.user = request.user
+            contact.save()
+            transaction = transaction_form.save(commit=False)
+            transaction.agent = contact
+            transaction.type = 'Долг'
+            transaction.save()
+            return redirect('main')
+    else:
+        contact_form = ContactForm()
+        transaction_form = TranzactionForm()
+    return render(
+        request, 'debts/lend.html',
+        {'contact_form': contact_form, 'transaction_form': transaction_form}
+    )
 
 
 @login_required
 def my_debts(request):
-    user_agents = Agent.objects.filter(user=request.user)
-    my_debts = Debt.objects.filter(
-        tranzaction_type='Взял в долг', agent__in=user_agents
-    )
+    user_agents = Contact.objects.filter(user=request.user)
+    my_debts = Tranzaction.objects.filter(
+        type='Займ', agent__in=user_agents
+    ).exclude(publish=False)
 
     context = {
         'my_debts': my_debts
@@ -38,10 +149,10 @@ def my_debts(request):
 
 @login_required
 def debts_to_me(request):
-    user_agents = Agent.objects.filter(user=request.user)
-    debts_to_me = Debt.objects.filter(
-        tranzaction_type='Дал в долг', agent__in=user_agents
-    )
+    user_agents = Contact.objects.filter(user=request.user)
+    debts_to_me = Tranzaction.objects.filter(
+        type='Долг', agent__in=user_agents
+    ).exclude(publish=False)
 
     context = {
         'debts_to_me': debts_to_me
@@ -50,145 +161,50 @@ def debts_to_me(request):
 
 
 @login_required
-def create_agent(request):
+def my_contacts(request, slug):
+    if slug == 'Займ':
+        context = {
+            'contacts': Contact.objects.filter(
+                user=request.user,
+            ),
+            'my_debts': Tranzaction.objects.filter(
+                type=slug,
+            ).exclude(publish=False)
+        }
+        return render(request, 'accounts/list_contact.html', context)
+    if slug == 'Долг':
+        context = {
+            'contacts': Contact.objects.filter(
+                user=request.user,
+            ),
+            'my_debts': Tranzaction.objects.filter(
+                type=slug,
+            ).exclude(publish=False)
+        }
+        return render(request, 'accounts/list_contact2.html', context)
+
+
+@login_required
+def take_loan(request, slug):
     if request.method == 'POST':
-        form = AgentForm(request.POST)
-        if form.is_valid():
-            agent = form.save(commit=False)
-            agent.user = request.user
-            agent.save()
-            messages.success(request, 'Агент создан успешно!')
-            return redirect('agent_debts')
+        if slug == 'Займ':
+            form = TranzactionContactForm(request.POST)
+            if form.is_valid():
+                transaction = form.save(commit=False)
+                transaction.type = 'Займ'
+                transaction.save()
+                return redirect('main')
+        elif slug == 'Долг':
+            form = TranzactionContactForm(request.POST)
+            if form.is_valid():
+                transaction = form.save(commit=False)
+                transaction.type = 'Займ'
+                transaction.save()
+                return redirect('main')
     else:
-        form = AgentForm()
+        form = TranzactionContactForm()
 
     context = {
-        'form': form
+        'form': form,
     }
-    return render(request, 'agents/create.html', context)
-
-
-@login_required
-def create_debt(request):
-    if request.method == 'POST':
-        form = DebtForm(request.POST)
-        if form.is_valid():
-            debt = form.save(commit=False)
-            debt.save()
-            messages.success(request, 'Задолженность создана успешно!')
-            return redirect('agent_debts')
-    else:
-        form = DebtForm()
-
-    context = {
-        'form': form
-    }
-    return render(request, 'debts/create_debt.html', context)
-
-
-@login_required
-def update_debt(request, pk):
-    debt = get_object_or_404(Debt, pk=pk)
-
-    if request.method == 'POST':
-        form = DebtForm(request.POST, instance=debt)
-        if form.is_valid():
-            debt = form.save(commit=False)
-            debt.save()
-            messages.success(request, 'Задолженность изменена успешно!')
-            return redirect('agent_debts')
-    else:
-        form = DebtForm(instance=debt)
-
-    context = {
-        'form': form
-    }
-    return render(request, 'debts/update_debt.html', context)
-
-
-@login_required
-def delete_debt(request, pk):
-    debt = get_object_or_404(Debt, pk=pk)
-    debt.delete()
-    messages.success(request, 'Задолженность удалена успешно!')
-    return redirect('agent_debts')
-
-
-@login_required
-def account_statistics(request):
-    user_agents = Agent.objects.filter(user=request.user)
-
-    total_given = Debt.objects.filter(
-        tranzaction_type='Дал в долг', agent__in=user_agents
-    ).aggregate(Sum('amount'))['amount__sum']
-    total_taken = Debt.objects.filter(
-        tranzaction_type='Взял в долг', agent__in=user_agents
-    ).aggregate(Sum('amount'))['amount__sum']
-    balance = (total_given or 0) - (total_taken or 0)
-
-    context = {
-        'total_given': total_given,
-        'total_taken': total_taken,
-        'balance': balance,
-    }
-    return render(request, 'accounts/statistics.html', context)
-
-
-@login_required
-def agents_balance(request):
-    user_agents = Agent.objects.filter(user=request.user)
-
-    agents_balance = {}
-    for agent in user_agents:
-        given = Debt.objects.filter(
-            tranzaction_type='Дал в долг', agent=agent
-        ).aggregate(Sum('amount'))['amount__sum']
-        taken = Debt.objects.filter(
-            tranzaction_type='Взял в долг', agent=agent
-        ).aggregate(Sum('amount'))['amount__sum']
-        balance = (given or 0) - (taken or 0)
-        agents_balance[agent] = balance
-
-    context = {
-        'agents_balance': agents_balance,
-    }
-    return render(request, 'accounts/agents_balance.html', context)
-
-
-@login_required
-def debts_history(request):
-    user_agents = Agent.objects.filter(user=request.user)
-    debts_history = Debt.objects.filter(
-        agent__in=user_agents
-    ).order_by('-date')
-
-    context = {
-        'debts_history': debts_history,
-    }
-    return render(request, 'debts/history.html', context)
-
-
-@login_required
-def turnover(request):
-    user_agents = Agent.objects.filter(user=request.user)
-
-    given_by_month = Debt.objects.filter(
-        tranzaction_type='Дал в долг', agent__in=user_agents
-    )\
-        .annotate(month=TruncMonth('date'))\
-        .values('month')\
-        .annotate(amount=Sum('amount'))\
-        .order_by('-month')
-    taken_by_month = Debt.objects.filter(
-        tranzaction_type='Взял в долг', agent__in=user_agents
-    )\
-        .annotate(month=TruncMonth('date'))\
-        .values('month')\
-        .annotate(amount=Sum('amount'))\
-        .order_by('-month')
-
-    context = {
-        'given_by_month': given_by_month,
-        'taken_by_month': taken_by_month,
-    }
-    return render(request, 'debts/turnover.html', context)
+    return render(request, 'debts/create_tranzaction.html', context)

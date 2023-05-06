@@ -10,7 +10,7 @@
         <div class="h-100 p-5 text-white bg-dark rounded-3">
           <h2>Взять  долг</h2>
           <p> </p>
-          <a class="btn btn-outline-light" href="{% url 'agent_debts' %}">Взять</a>
+          <a class="btn btn-outline-light" href="{% url 'contacts' slug='Займ' %}">Взять</a>
         </div>
       </div>
       <div class="col-md-6">
@@ -29,14 +29,14 @@
         <div class="h-100 p-5 text-white bg-dark rounded-3">
           <h2>Дать  в долг</h2>
           <p></p>
-          <a class="btn btn-outline-light" href="{% url 'create_debt' %}">Дать</a>
+          <a class="btn btn-outline-light" href="{% url 'contacts' slug='Долг' %}">Дать</a>
         </div>
       </div>
       <div class="col-md-6">
         <div class="h-100 p-5 bg-light border rounded-3">
-          <h2>Обороты</h2>
+          <h2>Получить погашение</h2>
           <p></p>
-          <a class="btn btn-outline-secondary" href="{% url 'turnover' %}">Обороты</a>
+          <a class="btn btn-outline-secondary" href="{% url 'debts_to_me' %}">Получить погашение</a>
         </div>
       </div>
     </div>

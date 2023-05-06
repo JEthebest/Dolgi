@@ -1,8 +1,13 @@
 from django.contrib import admin
 
-from apps.debts.models import Debt
+from apps.debts.models import Tranzaction, Contact
 
 
-@admin.register(Debt)
-class DebtAdmin(admin.ModelAdmin):
+@admin.register(Tranzaction)
+class TranzactionAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
     pass

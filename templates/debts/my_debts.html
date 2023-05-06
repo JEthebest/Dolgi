@@ -9,8 +9,7 @@
           <thead class="thead-light">
             <tr>
               <th scope="col">Дата</th>
-              <th scope="col">Тип</th>
-              <th scope="col">Агент</th>
+              <th scope="col">Хороший человек</th>
               <th scope="col">Сумма</th>
             </tr>
           </thead>
@@ -18,9 +17,13 @@
             {% for debt in my_debts %}
               <tr>
                 <td>{{ debt.date }}</td>
-                <td>{{ debt.tranzaction_type }}</td>
                 <td>{{ debt.agent }}</td>
                 <td>{{ debt.amount }}</td>
+                <td>
+                  <a href="{% url 'repay' transaction_id=debt.id slug='Погасить' %}" class="btn btn-sm btn-primary me-2">
+                    Погасить
+                  </a>
+                </td>
               </tr>
             {% empty %}
               <tr>

@@ -25,33 +25,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Выход</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'agent_debts' %}">Мои задолженности</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'my_debts' %}">Задолженности, которые я должен</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'debts_to_me' %}">Задолженности, которые мне должны</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'create_agent' %}">Создать агента</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'create_debt' %}">Создать задолженность</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_statistics' %}">Статистика аккаунта</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'agents_balance' %}">Баланс агентов</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'debts_history' %}">История задолженностей</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'turnover' %}">Обороты</a>
-                </li>
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">Вход</a>
