@@ -7,7 +7,8 @@ from apps.debts import views as deb_views
 
 users_url = [
     path('home/', views.home, name='home'),
-    path('', views.UserLoginView.as_view(), name='login'),
+    path('', views.unauthorized_menu, name='unauthorized_main'),
+    path('login/', views.UserLoginView.as_view(), name='login'),
     path('register/', views.UserRegistrationView.as_view(), name='register'),
     path('logout/', views.UserLogoutView.as_view(), name='logout'),
     path(

@@ -2,7 +2,16 @@
 
 {% block content %}
     <div class="bg-light p-5 rounded">
-        <h2 style="margin-left: 400px;">Регистрация</h2>
+
+        <style>
+            h2{
+                display: flex;
+                justify-content: center;
+
+            }
+        </style>
+
+        <h2>Регистрация</h2>
 
         <form method="post">
             {% csrf_token %}
