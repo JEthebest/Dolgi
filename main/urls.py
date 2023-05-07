@@ -45,13 +45,12 @@ debts_url = [
     ),
     path('lend/', deb_views.lend, name='lend_money'),
     path(
-        'receive_payment/<int:transaction_id>/',
+        'receive_payment/<int:transaction_id>/<str:slug>/',
         deb_views.receive_payment, name='receive_payment',
     ),
     path('my_debts/', deb_views.my_debts, name='my_debts'),
     path('debts_to_me/', deb_views.debts_to_me, name='debts_to_me'),
     path('contacts/<str:slug>/', deb_views.my_contacts, name='contacts'),
-    path('create/contact/', deb_views.create_contact, name='create_contact'),
     path('take_loan/<str:slug>/', deb_views.take_loan, name='take_loan'),
 ]
 

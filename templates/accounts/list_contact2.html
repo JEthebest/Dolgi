@@ -30,13 +30,13 @@
         </tr>
       </thead>
       <tbody>
-        {% for debt in my_debts %}
+        {% for debt in debts_to_me %}
         <tr>
           <td>{{ debt.date }}</td>
           <td>{{ debt.agent }}</td>
           <td>{{ debt.amount }}</td>
           <td>
-            <a href="{% url 'repay' transaction_id=debt.id slug='Увеличить' %}" class="btn btn-sm btn-primary me-2">
+            <a href="{% url 'receive_payment' transaction_id=debt.id slug='Увеличить' %}" class="btn btn-sm btn-primary me-2">
               Увеличить
             </a>
           </td>

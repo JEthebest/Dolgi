@@ -17,24 +17,6 @@ def main_dolgi(request):
 
 
 @login_required
-def create_contact(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            agent = form.save(commit=False)
-            agent.user = request.user
-            agent.save()
-            return redirect('main')
-    else:
-        form = ContactForm()
-
-    context = {
-        'form': form
-    }
-    return render(request, 'accounts/create.html', context)
-
-
-@login_required
 def borrow(request):
     if request.method == 'POST':
         contact_form = ContactForm(request.POST)
@@ -97,16 +79,44 @@ def repay(request, transaction_id, slug):
 
 
 @login_required
-def receive_payment(request, transaction_id):
+def receive_payment(request, transaction_id, slug):
     transaction = Tranzaction.objects.get(id=transaction_id)
     if request.method == 'POST':
         amount = float(request.POST['amount'])
-        if amount <= transaction.amount:
-            transaction.amount -= amount
+        if amount == float(
+            transaction.amount
+        ) and slug == 'Получить погашение':
+            transaction.publish = False  # закрытие сделки
             transaction.save()
-            return redirect('dashboard')
+            return redirect('main')
+        elif amount <= float(
+            transaction.amount
+        ) and slug == 'Получить погашение':
+            Tranzaction.objects.create(
+                agent=transaction.agent,
+                amount=transaction.amount - Decimal(amount),
+                description=f"""
+                        Receive payment of {amount} from transaction #{
+                        transaction.id
+                    }"""
+            )
+            transaction.publish = False
+            transaction.save()
+            return redirect('main')
+        elif slug == 'Увеличить':
+            Tranzaction.objects.create(
+                agent=transaction.agent,
+                amount=transaction.amount + Decimal(amount),
+                description=f"""
+                        Receive payment of {amount} from transaction #{
+                        transaction.id
+                    }"""
+            )
+            transaction.publish = False
+            transaction.save()
+            return redirect('main')
     return render(
-                request, 'receive_payment.html',
+                request, 'debts/repay.html',
                 {'transaction': transaction}
             )
 
@@ -198,7 +208,7 @@ def take_loan(request, slug):
             form = TranzactionContactForm(request.POST)
             if form.is_valid():
                 transaction = form.save(commit=False)
-                transaction.type = 'Займ'
+                transaction.type = 'Долг'
                 transaction.save()
                 return redirect('main')
     else:

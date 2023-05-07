@@ -2,13 +2,6 @@
 
 {% block content %}
   <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class="text-right mb-4">
-          <a href="{% url 'lend_money' %}" class="btn btn-primary">Новый долг</a>
-        </div>
-      </div>
-    </div>
     <h1 class="text-center mb-4">Мои должники</h1>
     <div class="row justify-content-center">
       <div class="col-md-8">
@@ -26,6 +19,15 @@
                 <td>{{ debt.agent.name }}</td>
                 <td>{{ debt.amount }}</td>
                 <td>{{ debt.description }}</td>
+                <td>
+                  <a href="{% url 'receive_payment' transaction_id=debt.id slug='Получить погашение' %}" class="btn btn-sm btn-primary me-2">
+                    Получить погашение
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center">Нет задолженностей для отображения</td>
               </tr>
             {% endfor %}
           </tbody>
