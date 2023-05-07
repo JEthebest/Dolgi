@@ -73,3 +73,7 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 @login_required
 def home(request):
     return render(request, 'users/base.html')
+
+@login_required
+def unauthorized_menu(request):
+    return render(request, 'users/unauthorized_menu.html')
