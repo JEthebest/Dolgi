@@ -5,7 +5,9 @@ from apps.users.models import User
 
 TRANZACTION_CHOICE = (
     ('Займ', 'Займ'),
+    ('Погасить займ', 'Погасить займ'),
     ('Долг', 'Долг'),
+    ('Принять погашение', 'Принять погашение'),
 )
 
 
@@ -19,11 +21,11 @@ class Contact(models.Model):
 
 
 class Tranzaction(models.Model):
-    type = models.CharField(
+    tranzaction_type = models.CharField(
         max_length=20, choices=TRANZACTION_CHOICE,
         default='Займ', verbose_name='Tranzaction type',
     )
-    agent = models.ForeignKey(
+    contact = models.ForeignKey(
         Contact, on_delete=models.CASCADE,
         null=True, blank=True, related_name='tranzactions',
     )
@@ -37,4 +39,4 @@ class Tranzaction(models.Model):
     )
 
     def __str__(self):
-        return self.description
+        return f'{self.description}-{self.tranzaction_type}'

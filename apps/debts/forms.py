@@ -6,7 +6,7 @@ from apps.debts.models import Tranzaction, Contact
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
-        fields = ('name', 'phone_number',)
+        fields = ['name', 'phone_number']
 
 
 class TranzactionForm(forms.ModelForm):
@@ -18,10 +18,10 @@ class TranzactionForm(forms.ModelForm):
 class RepayForm(forms.ModelForm):
     class Meta:
         model = Tranzaction
-        fields = ['amount']
+        fields = ['amount', 'description']
 
 
 class TranzactionContactForm(forms.ModelForm):
     class Meta:
         model = Tranzaction
-        fields = ['agent', 'amount', 'description']
+        fields = ['contact', 'amount', 'description']
