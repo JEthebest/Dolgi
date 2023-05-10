@@ -20,7 +20,7 @@ from apps.users.forms import UserForm
 class UserRegistrationView(FormView):
     template_name = 'users/register.html'
     form_class = UserForm
-    success_url = '/'
+    success_url = '/debts/'
 
     def form_valid(self, form):
         user = form.save()
@@ -32,7 +32,7 @@ class UserRegistrationView(FormView):
 class UserLoginView(FormView):
     template_name = 'users/login.html'
     form_class = AuthenticationForm
-    success_url = '/'
+    success_url = '/debts/'
 
     def form_valid(self, form):
         user = form.get_user()
