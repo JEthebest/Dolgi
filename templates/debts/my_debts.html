@@ -1,38 +1,14 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-  <div class="container">
-    <h1 class="text-center">Мои долги</h1>
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <table class="table table-hover">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">Дата</th>
-              <th scope="col">Хороший человек</th>
-              <th scope="col">Сумма</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for debt in my_debts %}
-              <tr>
-                <td>{{ debt.date }}</td>
-                <td>{{ debt.agent }}</td>
-                <td>{{ debt.amount }}</td>
-                <td>
-                  <a href="{% url 'repay' transaction_id=debt.id slug='Погасить' %}" class="btn btn-sm btn-primary me-2">
-                    Погасить
-                  </a>
-                </td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="5" class="text-center">Нет задолженностей для отображения</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<h1>My Debts</h1>
+{% if debts %}
+<ul>
+    {% for debt in debts %}
+    <li>{{ debt.contact }} - {{ debt.amount }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>You don't have any debts.</p>
+{% endif %}
 {% endblock %}

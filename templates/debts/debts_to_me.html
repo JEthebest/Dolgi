@@ -1,38 +1,14 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-  <div class="container">
-    <h1 class="text-center mb-4">Мои должники</h1>
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <table class="table table-striped">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">Должник</th>
-              <th scope="col">Сумма</th>
-              <th scope="col">Описание</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for debt in debts_to_me %}
-              <tr>
-                <td>{{ debt.agent.name }}</td>
-                <td>{{ debt.amount }}</td>
-                <td>{{ debt.description }}</td>
-                <td>
-                  <a href="{% url 'receive_payment' transaction_id=debt.id slug='Получить погашение' %}" class="btn btn-sm btn-primary me-2">
-                    Получить погашение
-                  </a>
-                </td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="5" class="text-center">Нет задолженностей для отображения</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<h1>Debts to Me</h1>
+{% if debts %}
+<ul>
+    {% for debt in debts %}
+    <li>{{ debt.contact }} - {{ debt.amount }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No one owes you any money.</p>
+{% endif %}
 {% endblock %}

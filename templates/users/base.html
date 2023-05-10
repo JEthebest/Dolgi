@@ -32,6 +32,15 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Выход</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'new_contact' %}">Создать контакт</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'my_debts' %}">Мои долги</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'debts_to_me' %}">Мои должники</a>
+              </li>
               {% endif %}
             </ul>
           </div>

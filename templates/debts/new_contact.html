@@ -1,9 +1,10 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-  <form method="post">
+  <h1>New Contact</h1>
+  <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Take Loan</button>
+    <input type="submit" value="Save">
   </form>
 {% endblock %}

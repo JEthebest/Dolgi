@@ -13,7 +13,6 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
 )
 from django.views.generic.edit import FormView
-from django.contrib.auth.decorators import login_required
 
 from apps.users.forms import UserForm
 
@@ -25,7 +24,6 @@ class UserRegistrationView(FormView):
 
     def form_valid(self, form):
         user = form.save()
-        print(user)
         make_password(user.password)
         login(self.request, user)
         return super().form_valid(form)
@@ -34,7 +32,7 @@ class UserRegistrationView(FormView):
 class UserLoginView(FormView):
     template_name = 'users/login.html'
     form_class = AuthenticationForm
-    success_url = 'home'
+    success_url = '/'
 
     def form_valid(self, form):
         user = form.get_user()
@@ -70,10 +68,5 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'users/password_reset_complete.html'
 
 
-@login_required
-def home(request):
-    return render(request, 'users/base.html')
-
-@login_required
 def unauthorized_menu(request):
     return render(request, 'users/unauthorized_menu.html')

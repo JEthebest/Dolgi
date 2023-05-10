@@ -1,0 +1,16 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <h1>New Transaction</h1>
+  <form method="POST">
+    {% csrf_token %}
+    <label for="contact_id">Choose Contact:</label>
+    <select name="contact_id">
+      {% for contact in contacts %}
+        <option value="{{ contact.id }}">{{ contact.name }}</option>
+      {% endfor %}
+    </select>
+    {{ transaction_form.as_p }}
+    <input type="submit" value="Submit">
+  </form>
+{% endblock %}

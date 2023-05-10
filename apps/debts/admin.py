@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from apps.debts.models import Tranzaction, Contact
+from apps.debts.models import Transaction, Contact
 
 
-@admin.register(Tranzaction)
-class TranzactionAdmin(admin.ModelAdmin):
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
     pass
 
 
