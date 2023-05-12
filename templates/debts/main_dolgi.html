@@ -10,15 +10,15 @@
         <div class="h-100 p-5 text-white bg-dark rounded-3">
           <h2>Взять  долг</h2>
           <p> </p>
-          <a class="btn btn-outline-light" href="{% url 'transaction' transaction_type='BORROW' %}">Взять</a>
-          <a class="btn btn-outline-light" href="{% url 'transaction_contact' transaction_type='BORROW' %}">Взять у контакта</a>
+          <a class="btn btn-outline-light" href="{% url 'transaction' transaction_type='borrow' %}">Взять</a>
+          <a class="btn btn-outline-light" href="{% url 'transaction_contact' transaction_type='borrow' %}">Взять у контакта</a>
         </div>
       </div>
       <div class="col-md-6">
         <div class="h-100 p-5 bg-light border rounded-3">
           <h2>Погасить долг</h2>
           <p></p>
-          <a class="btn btn-outline-secondary" href="{% url 'transaction_contact' transaction_type='REPAY' %}">Погасить долг</a>
+          <a class="btn btn-outline-secondary" href="{% url 'transaction_contact' transaction_type='repay' %}">Погасить долг</a>
         </div>
       </div>
     </div>
@@ -30,15 +30,15 @@
         <div class="h-100 p-5 text-white bg-dark rounded-3">
           <h2>Дать  в долг</h2>
           <p></p>
-          <a class="btn btn-outline-light" href="{% url 'transaction' transaction_type='LEND' %}">Дать</a>
-          <a class="btn btn-outline-light" href="{% url 'transaction_contact' transaction_type='LEND' %}">Дать контакту</a>
+          <a class="btn btn-outline-light" href="{% url 'transaction' transaction_type='lend' %}">Дать</a>
+          <a class="btn btn-outline-light" href="{% url 'transaction_contact' transaction_type='lend' %}">Дать контакту</a>
         </div>
       </div>
       <div class="col-md-6">
         <div class="h-100 p-5 bg-light border rounded-3">
           <h2>Получить погашение</h2>
           <p></p>
-          <a class="btn btn-outline-secondary" href="{% url 'transaction_contact' transaction_type='RECEIVE' %}">Получить погашение</a>
+          <a class="btn btn-outline-secondary" href="{% url 'transaction_contact' transaction_type='receive' %}">Получить погашение</a>
         </div>
       </div>
     </div>

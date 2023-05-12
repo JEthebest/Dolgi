@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
 from apps.debts.models import Transaction, Contact
 from apps.debts.forms import (
@@ -17,8 +18,8 @@ def main_dolgi(request):
 def my_debts(request):
     debts = Transaction.objects.filter(
         contact__user=request.user,
-        transaction_type='BORROW'
-    )
+        transaction_type='borrow'
+    ).values('contact__name').annotate(total_debt=Sum('amount'))
     context = {
         'debts': debts
     }
@@ -29,9 +30,8 @@ def my_debts(request):
 def debts_to_me(request):
     debts = Transaction.objects.filter(
         contact__user=request.user,
-        transaction_type='LEND'
-    )
-    print(debts)
+        transaction_type='lend'
+    ).values('contact__name').annotate(total_debt=Sum('amount'))
     context = {
         'debts': debts
     }

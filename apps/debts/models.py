@@ -4,10 +4,10 @@ from apps.users.models import User
 
 
 TRANSACTION_CHOICE = (
-    ('BORROW', 'Взять в долг'),
-    ('REPAY', 'Погасить займ'),
-    ('LEND', 'Дать в долг'),
-    ('RECEIVE', 'Принять погашение'),
+    ('borrow', 'Взять в долг'),
+    ('repay', 'Погасить займ'),
+    ('lend', 'Дать в долг'),
+    ('receive', 'Принять погашение'),
 )
 
 
@@ -26,7 +26,7 @@ class Contact(models.Model):
 class Transaction(models.Model):
     transaction_type = models.CharField(
         max_length=20, choices=TRANSACTION_CHOICE,
-        default='BORROW', verbose_name='Transaction type',
+        default='borrow', verbose_name='Transaction type',
     )
     contact = models.ForeignKey(
         Contact, on_delete=models.CASCADE,
