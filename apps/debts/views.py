@@ -72,7 +72,7 @@ def transaction(request, transaction_type):
             contact.user = request.user
             contact.save()
             transaction = transaction_form.save(commit=False)
-            transaction.agent = contact
+            transaction.contact = contact
             transaction.transaction_type = transaction_type
             transaction.save()
             return redirect('main')
