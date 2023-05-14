@@ -129,3 +129,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates', 'assets')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
+
+
+# Настройки бота
+
+TOKEN = '5949467748:AAG7lN4DR-7qDKH0EHOuggekR0MVkuTY1ZI'
