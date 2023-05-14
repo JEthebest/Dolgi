@@ -266,3 +266,4 @@ staticfiles
 static
 data.sql
 .vscode
+.handler-saves
